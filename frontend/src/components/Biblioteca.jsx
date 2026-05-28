@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react'
 
+import { apiUrl } from '../api'
+
 export default function Biblioteca() {
 
   const [livros, setLivros] = useState([])
 
   useEffect(() => {
-    fetch('http://127.0.0.1:8000/livros/')
+    fetch(apiUrl('/livros/'))
       .then((response) => response.json())
       .then((data) => {
         setLivros(data)

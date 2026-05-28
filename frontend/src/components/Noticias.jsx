@@ -3,7 +3,9 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 
-const API_URL = 'http://127.0.0.1:8000/noticias/api/'
+import { apiUrl } from '../api'
+
+const API_URL = apiUrl('/noticias/api/')
 
 const FIXED_BLOCK = {
   titulo: 'Eventos e Notícias',

@@ -4,6 +4,7 @@ from django.views.decorators.http import require_GET
 
 from .models import Evento, Noticia
 from django.utils import timezone
+from django.conf import settings
 
 
 def lista_eventos(request):
@@ -37,7 +38,8 @@ def noticias_api(request):
         .values('id', 'titulo', 'descricao', 'data_evento', 'local', 'imagem')
     )
 
-    base_url = request.build_absolute_uri('/media/')
+    media_prefix = f"{getattr(settings, 'BACKEND_ROUTE_PREFIX', '')}{settings.MEDIA_URL}"
+    base_url = request.build_absolute_uri(media_prefix)
 
     def build_img(path):
         return (base_url + path) if path else None
