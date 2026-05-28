@@ -5,3 +5,4 @@ Pillow>=11,<12
 psycopg[binary]>=3.2,<4
 PyMySQL>=1.1,<2
 gunicorn
+whitenoise
