@@ -50,6 +50,7 @@ CSRF_TRUSTED_ORIGINS = [
     'http://localhost:5173',
     'http://127.0.0.1:5173',
     'https://*.vercel.app',
+    'https://*.onrender.com', 
 ]
 
 if os.getenv('DJANGO_CSRF_TRUSTED_ORIGINS'):
@@ -209,7 +210,3 @@ if os.getenv('CORS_ALLOWED_ORIGINS'):
     )
 
 
-from django.conf import settings
-from django.conf.urls.static import static
-
-urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
