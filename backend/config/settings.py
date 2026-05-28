@@ -33,9 +33,7 @@ DEBUG = os.getenv('DJANGO_DEBUG', 'False' if os.getenv('VERCEL') else 'True').lo
 }
 
 ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1',
-    '.vercel.app',
+    '*',
 ]
 
 if os.getenv('VERCEL_URL'):
