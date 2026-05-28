@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 
-const CONTACT_API = 'http://127.0.0.1:8000/contato/info/'
+import { apiUrl } from '../api'
+
+const CONTACT_API = apiUrl('/contato/info/')
 
 const FACEBOOK_URL = 'https://www.facebook.com/llivroemmovimento'
 

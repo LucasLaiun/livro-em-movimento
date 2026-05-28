@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import joelpic from '../assets/joelpic.jpg'
 
+import { apiUrl } from '../api'
+
 export default function Voluntarios() {
   const [formData, setFormData] = useState({
     nome: '',
@@ -20,7 +22,7 @@ export default function Voluntarios() {
     e.preventDefault()
 
     try {
-      const response = await fetch('http://127.0.0.1:8000/voluntarios/', {
+      const response = await fetch(apiUrl('/voluntarios/'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

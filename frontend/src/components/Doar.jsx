@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { useCopyToClipboard } from '../hooks/useCopyToClipboard'
 
+import { apiUrl } from '../api'
+
 const CHAVE_PIX = 'contato@livrosemmovimento.org.br'
 
 export default function Doacao() {
@@ -18,7 +20,7 @@ export default function Doacao() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      const response = await fetch('http://127.0.0.1:8000/doacao/', {
+      const response = await fetch(apiUrl('/doacao/'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form)
