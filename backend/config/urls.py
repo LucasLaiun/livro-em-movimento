@@ -14,13 +14,12 @@ backend_urlpatterns = [
     path('admin/', admin.site.urls),
     path('livros/', livros_json),
     path('doacao/', receber_doacao),
-    # path('', include('core.urls')),
     path('biblioteca/', include('biblioteca.urls')),
     path('doacao/', include('doacao.urls')),
     path('voluntarios/', include('voluntarios.urls')),
     path('contato/', include('contato.urls')),
     path('noticias/', include('noticias.urls')),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 urlpatterns = [
     path('_/backend/', include(backend_urlpatterns)),

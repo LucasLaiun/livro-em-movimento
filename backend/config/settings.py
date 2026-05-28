@@ -50,6 +50,7 @@ CSRF_TRUSTED_ORIGINS = [
     'http://localhost:5173',
     'http://127.0.0.1:5173',
     'https://*.vercel.app',
+    'https://*.onrender.com', 
 ]
 
 if os.getenv('DJANGO_CSRF_TRUSTED_ORIGINS'):
@@ -92,7 +93,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 ROOT_URLCONF = 'config.urls'
 
@@ -204,3 +208,5 @@ if os.getenv('CORS_ALLOWED_ORIGINS'):
         for origin in os.environ['CORS_ALLOWED_ORIGINS'].split(',')
         if origin.strip()
     )
+
+
