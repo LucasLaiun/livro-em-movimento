@@ -19,7 +19,6 @@ backend_urlpatterns = [
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 urlpatterns = [
-    path('_/backend/', include(backend_urlpatterns)),
     *backend_urlpatterns,
     re_path(r'^(?!admin|static|media).*$', TemplateView.as_view(template_name='index.html')),
 ]
