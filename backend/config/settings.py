@@ -104,6 +104,14 @@ MIDDLEWARE = [
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
+# Em produção (Vercel) o filesystem em runtime pode não conter os arquivos
+# gerados por collectstatic; pedimos ao WhiteNoise para resolver via finders
+# (caminhos dos apps instalados, sempre disponíveis).
+WHITENOISE_USE_FINDERS = not DEBUG
+# Tolera assets referenciados pelo admin que não estejam no manifest,
+# evitando ValueError em runtime na Vercel.
+WHITENOISE_MANIFEST_STRICT = False
+
 ROOT_URLCONF = 'config.urls'
 
 TEMPLATES = [
