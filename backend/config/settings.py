@@ -35,6 +35,8 @@ DEBUG = os.getenv('DJANGO_DEBUG', 'False' if os.getenv('VERCEL') else 'True').lo
 ALLOWED_HOSTS = [
     "livro-em-movimento.onrender.com",
     ".vercel.app",
+    "localhost",
+    "127.0.0.1",
 ]
 
 if os.getenv('VERCEL_URL'):
@@ -81,7 +83,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'core',
-    'biblioteca',
     'doacao',
     'voluntarios',
     'contato',
@@ -216,5 +217,3 @@ if os.getenv('CORS_ALLOWED_ORIGINS'):
         for origin in os.environ['CORS_ALLOWED_ORIGINS'].split(',')
         if origin.strip()
     )
-
-

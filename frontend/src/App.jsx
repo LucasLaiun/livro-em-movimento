@@ -12,9 +12,9 @@ import CTASection from './components/CTASection'
 import Sobre from './components/Sobre'
 import Voluntarios from './components/Voluntarios'
 import Noticias from './components/Noticias'
-import Biblioteca from './components/Biblioteca'
 import Doacao from './components/Doar'
 import Contato from './components/Contato'
+import NotFound from './components/NotFound'
 
 function Home() {
   return (
@@ -38,10 +38,11 @@ export default function App() {
         <Route path="/sobre" element={<Sobre />} />
         <Route path="/voluntarios" element={<Voluntarios />} />
         <Route path="/noticias" element={<Noticias />} />
-        <Route path="/biblioteca" element={<Biblioteca />} />
         <Route path="/doacao" element={<Doacao />} />
 
         <Route path="/contato" element={<Navigate to="/doacao" replace />} />
+
+        <Route path="*" element={<NotFound />} />
       </Routes>
 
       <Footer />

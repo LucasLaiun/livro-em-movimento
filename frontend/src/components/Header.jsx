@@ -57,12 +57,6 @@ export default function Header() {
             </li>
 
             <li>
-              <Link to="/biblioteca" className="hover:opacity-70 transition">
-                Biblioteca
-              </Link>
-            </li>
-
-            <li>
               <Link to="/noticias" className="hover:opacity-70 transition">
                 Notícias
               </Link>
@@ -118,16 +112,6 @@ export default function Header() {
                 className="hover:opacity-70 transition"
               >
                 Sobre
-              </Link>
-            </li>
-
-            <li>
-              <Link
-                to="/biblioteca"
-                onClick={() => setMenuOpen(false)}
-                className="hover:opacity-70 transition"
-              >
-                Biblioteca
               </Link>
             </li>
 

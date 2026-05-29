@@ -23,7 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 
-
 #backend - barbara
 __pycache__/
 *.pyc
@@ -34,3 +33,8 @@ media/
 .vite/
 node_modules/
 dist/
+venv/
+.env
+*.pyc
+pycache/
+db.sqlite3
