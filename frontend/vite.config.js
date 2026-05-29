@@ -7,6 +7,7 @@ export default defineConfig({
   build: {
     outDir: '../backend/static/dist',
     emptyOutDir: true,
+    manifest: true, 
   },
   server: {
     proxy: {
