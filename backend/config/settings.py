@@ -102,7 +102,23 @@ MIDDLEWARE = [
     
 ]
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# === Storage backends (Django 5.x STORAGES API) ===
+# Mídia: usa Cloudinary se CLOUDINARY_URL estiver no ambiente
+# (definida na Vercel via env var; a lib cloudinary parseia automaticamente).
+# Sem essa env (dev local), cai para FileSystemStorage em MEDIA_ROOT.
+# Static: WhiteNoise comprimido com manifest, mesma estratégia anterior.
+STORAGES = {
+    "default": {
+        "BACKEND": (
+            "cloudinary_storage.storage.MediaCloudinaryStorage"
+            if os.getenv("CLOUDINARY_URL")
+            else "django.core.files.storage.FileSystemStorage"
+        ),
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
 
 # Em produção (Vercel) o filesystem em runtime pode não conter os arquivos
 # gerados por collectstatic; pedimos ao WhiteNoise para resolver via finders
@@ -206,8 +222,6 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [BASE_DIR / 'static'] if (BASE_DIR / 'static').exists() else []
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
