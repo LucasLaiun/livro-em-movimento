@@ -5,9 +5,9 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   build: {
-    outDir: '../backend/static/dist',
+    // outDir: '../backend/static/dist',
     emptyOutDir: true,
-    manifest: true, 
+    manifest: true,
   },
   server: {
     proxy: {
