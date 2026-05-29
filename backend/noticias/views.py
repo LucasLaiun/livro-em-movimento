@@ -25,44 +25,45 @@ def lista_eventos(request):
 def noticias_api(request):
     """
     Endpoint JSON consumido pelo frontend React.
-    Retorna notícias e próximos eventos ordenados.
+    Retorna notícias e eventos ordenados.
     """
-    agora = timezone.now()
+    def imagem_url(field_file):
+        """
+        Devolve URL absoluta da imagem.
 
-    noticias_qs = Noticia.objects.all().values(
-        'id', 'titulo', 'descricao', 'imagem', 'criado_em'
-    )
-    eventos_qs = (
-    Evento.objects.all()
-        .order_by('-data_evento')
-        .values('id', 'titulo', 'descricao', 'data_evento', 'local', 'imagem')
-    )
+        Delega ao storage backend via FieldFile.url:
+        - Em produção, MediaCloudinaryStorage devolve uma URL absoluta do
+          Cloudinary (https://res.cloudinary.com/...). build_absolute_uri
+          mantém URL absoluta intacta.
+        - Em dev local, FileSystemStorage devolve path relativo
+          (/media/...). build_absolute_uri prepende o host.
+        """
+        if not field_file:
+            return None
+        return request.build_absolute_uri(field_file.url)
 
-    media_prefix = f"{getattr(settings, 'BACKEND_ROUTE_PREFIX', '')}{settings.MEDIA_URL}"
-    base_url = request.build_absolute_uri(media_prefix)
-
-    def build_img(path):
-        return (base_url + path) if path else None
+    noticias_qs = Noticia.objects.all()
+    eventos_qs = Evento.objects.all().order_by('-data_evento')
 
     noticias = [
         {
-            'id': n['id'],
-            'titulo': n['titulo'],
-            'descricao': n['descricao'],
-            'imagem_url': build_img(n['imagem']),
-            'criado_em': n['criado_em'],
+            'id': n.id,
+            'titulo': n.titulo,
+            'descricao': n.descricao,
+            'imagem_url': imagem_url(n.imagem),
+            'criado_em': n.criado_em,
         }
         for n in noticias_qs
     ]
 
     eventos = [
         {
-            'id': e['id'],
-            'titulo': e['titulo'],
-            'descricao': e['descricao'],
-            'data_evento': e['data_evento'],
-            'local': e['local'],
-            'imagem_url': build_img(e['imagem']),
+            'id': e.id,
+            'titulo': e.titulo,
+            'descricao': e.descricao,
+            'data_evento': e.data_evento,
+            'local': e.local,
+            'imagem_url': imagem_url(e.imagem),
         }
         for e in eventos_qs
     ]
