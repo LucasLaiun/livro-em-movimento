@@ -133,6 +133,32 @@ WHITENOISE_USE_FINDERS = not DEBUG
 # evitando ValueError em runtime na Vercel.
 WHITENOISE_MANIFEST_STRICT = False
 
+# Logging — força tracebacks de 5xx (django.request) e erros do Cloudinary
+# para stderr, que a Vercel captura em "Logs". Sem isso, o handler de erro
+# do Django engole o stacktrace em produção (DEBUG=False), dificultando o
+# diagnóstico de uploads do admin que retornam 500.
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django.request': {
+            'handlers': ['console'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'cloudinary': {
+            'handlers': ['console'],
+            'level': 'WARNING',
+            'propagate': False,
+        },
+    },
+}
+
 ROOT_URLCONF = 'config.urls'
 
 TEMPLATES = [
