@@ -125,6 +125,27 @@ STORAGES = {
 # compatível para a lib não quebrar com AttributeError.
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
+# === Configuração explícita do SDK Cloudinary ===
+# A lib `cloudinary` tenta auto-ler CLOUDINARY_URL no momento do import do
+# módulo. Em alguns ambientes/ordens de import (especialmente quando Django
+# carrega settings antes do primeiro acesso ao SDK, ou em ambientes onde a
+# env chega "tarde"), essa auto-leitura não popula cloud_name/api_key/api_secret
+# — fica tudo None e o upload falha com "Invalid Signature" ou similar.
+# Para eliminar essa dependência implícita, parseamos a URL e chamamos
+# cloudinary.config(...) explicitamente assim que settings é carregado.
+_CLOUDINARY_URL = os.getenv("CLOUDINARY_URL")
+if _CLOUDINARY_URL:
+    import cloudinary
+    from urllib.parse import urlparse
+
+    _u = urlparse(_CLOUDINARY_URL)
+    cloudinary.config(
+        cloud_name=_u.hostname,
+        api_key=_u.username,
+        api_secret=_u.password,
+        secure=True,
+    )
+
 # Em produção (Vercel) o filesystem em runtime pode não conter os arquivos
 # gerados por collectstatic; pedimos ao WhiteNoise para resolver via finders
 # (caminhos dos apps instalados, sempre disponíveis).
