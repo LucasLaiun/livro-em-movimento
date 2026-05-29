@@ -120,6 +120,12 @@ STORAGES = {
     },
 }
 
+# django-cloudinary-storage (lib legada) lê settings.STATICFILES_STORAGE
+# diretamente no seu collectstatic command. Em Django 5.x, STORAGES é a
+# fonte de verdade efetiva; mantemos a setting legada apenas como string
+# compatível para a lib não quebrar com AttributeError.
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
 # Em produção (Vercel) o filesystem em runtime pode não conter os arquivos
 # gerados por collectstatic; pedimos ao WhiteNoise para resolver via finders
 # (caminhos dos apps instalados, sempre disponíveis).
