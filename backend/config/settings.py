@@ -75,7 +75,6 @@ INSTALLED_APPS = [
     'corsheaders',
     'django_vite',
     'cloudinary',
-    'cloudinary_storage',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
