@@ -34,6 +34,7 @@ DEBUG = os.getenv('DJANGO_DEBUG', 'False' if os.getenv('VERCEL') else 'True').lo
 
 ALLOWED_HOSTS = [
     "livro-em-movimento.onrender.com",
+    "livro-em-movimento-tiid.vercel.app",
 ]
 
 if os.getenv('VERCEL_URL'):
