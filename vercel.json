@@ -9,7 +9,8 @@
     "backend": {
       "entrypoint": "backend",
       "routePrefix": "/_/backend",
-      "framework": "django"
+      "framework": "django",
+      "buildCommand": "python manage.py migrate --noinput && python manage.py collectstatic --noinput"
     }
   },
   "rewrites": [
