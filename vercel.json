@@ -10,7 +10,7 @@
       "entrypoint": "backend",
       "routePrefix": "/_/backend",
       "framework": "django",
-      "buildCommand": "python manage.py migrate --noinput && python manage.py collectstatic --noinput"
+      "buildCommand": "python manage.py migrate --noinput && python manage.py create_superuser_env && python manage.py collectstatic --noinput"
     }
   },
   "rewrites": [
