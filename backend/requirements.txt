@@ -7,3 +7,5 @@ PyMySQL>=1.1,<2
 gunicorn
 whitenoise
 django-vite>=3.0,<4
+cloudinary>=1.36,<2
+django-cloudinary-storage>=0.3,<1

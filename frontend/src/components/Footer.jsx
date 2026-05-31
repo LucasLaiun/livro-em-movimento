@@ -114,11 +114,6 @@ export default function Footer() {
               </Link>
             </li>
             <li>
-              <Link to="/biblioteca" className="hover:text-white transition">
-                Biblioteca
-              </Link>
-            </li>
-            <li>
               <Link to="/voluntarios" className="hover:text-white transition">
                 Seja voluntário
               </Link>

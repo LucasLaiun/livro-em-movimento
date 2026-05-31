@@ -35,6 +35,8 @@ DEBUG = os.getenv('DJANGO_DEBUG', 'False' if os.getenv('VERCEL') else 'True').lo
 ALLOWED_HOSTS = [
     "livro-em-movimento.onrender.com",
     ".vercel.app",
+    "localhost",
+    "127.0.0.1",
 ]
 
 if os.getenv('VERCEL_URL'):
@@ -72,6 +74,7 @@ BACKEND_ROUTE_PREFIX = os.getenv(
 INSTALLED_APPS = [
     'corsheaders',
     'django_vite',
+    'cloudinary',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -79,7 +82,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'core',
-    'biblioteca',
     'doacao',
     'voluntarios',
     'contato',
@@ -99,7 +101,84 @@ MIDDLEWARE = [
     
 ]
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# === Storage backends (Django 5.x STORAGES API) ===
+# Mídia: usa Cloudinary se CLOUDINARY_URL estiver no ambiente
+# (definida na Vercel via env var; a lib cloudinary parseia automaticamente).
+# Sem essa env (dev local), cai para FileSystemStorage em MEDIA_ROOT.
+# Static: WhiteNoise comprimido com manifest, mesma estratégia anterior.
+STORAGES = {
+    "default": {
+        "BACKEND": (
+            "cloudinary_storage.storage.MediaCloudinaryStorage"
+            if os.getenv("CLOUDINARY_URL")
+            else "django.core.files.storage.FileSystemStorage"
+        ),
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
+
+# django-cloudinary-storage (lib legada) lê settings.STATICFILES_STORAGE
+# diretamente no seu collectstatic command. Em Django 5.x, STORAGES é a
+# fonte de verdade efetiva; mantemos a setting legada apenas como string
+# compatível para a lib não quebrar com AttributeError.
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+# === Configuração explícita do SDK Cloudinary ===
+# A lib `cloudinary` tenta auto-ler CLOUDINARY_URL no momento do import do
+# módulo. Em alguns ambientes/ordens de import (especialmente quando Django
+# carrega settings antes do primeiro acesso ao SDK, ou em ambientes onde a
+# env chega "tarde"), essa auto-leitura não popula cloud_name/api_key/api_secret
+# — fica tudo None e o upload falha com "Invalid Signature" ou similar.
+# Para eliminar essa dependência implícita, parseamos a URL e chamamos
+# cloudinary.config(...) explicitamente assim que settings é carregado.
+_CLOUDINARY_URL = os.getenv("CLOUDINARY_URL")
+if _CLOUDINARY_URL:
+    import cloudinary
+    from urllib.parse import urlparse
+
+    _u = urlparse(_CLOUDINARY_URL)
+    cloudinary.config(
+        cloud_name=_u.hostname,
+        api_key=_u.username,
+        api_secret=_u.password,
+        secure=True,
+    )
+
+# Em produção (Vercel) o filesystem em runtime pode não conter os arquivos
+# gerados por collectstatic; pedimos ao WhiteNoise para resolver via finders
+# (caminhos dos apps instalados, sempre disponíveis).
+WHITENOISE_USE_FINDERS = not DEBUG
+# Tolera assets referenciados pelo admin que não estejam no manifest,
+# evitando ValueError em runtime na Vercel.
+WHITENOISE_MANIFEST_STRICT = False
+
+# Logging — força tracebacks de 5xx (django.request) e erros do Cloudinary
+# para stderr, que a Vercel captura em "Logs". Sem isso, o handler de erro
+# do Django engole o stacktrace em produção (DEBUG=False), dificultando o
+# diagnóstico de uploads do admin que retornam 500.
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django.request': {
+            'handlers': ['console'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'cloudinary': {
+            'handlers': ['console'],
+            'level': 'WARNING',
+            'propagate': False,
+        },
+    },
+}
 
 ROOT_URLCONF = 'config.urls'
 
@@ -156,7 +235,7 @@ else:
     }
 
 
-# Password validation
+# Password validation - validations
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -212,5 +291,3 @@ if os.getenv('CORS_ALLOWED_ORIGINS'):
         for origin in os.environ['CORS_ALLOWED_ORIGINS'].split(',')
         if origin.strip()
     )
-
-
